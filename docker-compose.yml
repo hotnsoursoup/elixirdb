@@ -1,0 +1,129 @@
+services:
+  elixirdb-mysql:
+    image: mysql:8.0
+    container_name: elixirdb-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: elixirdb
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: StrongPassword!123
+    volumes:
+      - ./docker/mysql.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/mysql.ini:/docker-entrypoint-initdb.d/mysql.ini
+      - ./docker/test_data.csv:/docker-entrypoint-initdb.d/test_data.csv
+    ports:
+      - "3306:3306"
+  # elixirdb.mysql.health:
+  #   image: mysql:8.0
+  #   depends_on:
+  #       elixirdb-mysql:
+  #         condition: service_healthy
+  # elixirdb-mariadb:
+  #   image: mariadb:latest
+  #   container_name: elixirdb-mariadb
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #     MYSQL_DATABASE: elixirdb
+  #     MYSQL_USER: test_user
+  #     MYSQL_PASSWORD: StrongPassword!123
+  #   ports:
+  #     - 3307:3308
+  #   volumes:
+  #     - ./docker/mysql.sql:/docker-entrypoint-initdb.d/init.sql
+  #     - ./docker/test_data.csv:/docker-entrypoint-initdb.d/test_data.csv
+  elixirdb-postgres:
+    image: postgres:13
+    container_name: elixirdb-postgres
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: StrongPassword!123
+      POSTGRES_DB: elixirdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/test_data.csv:/docker-entrypoint-initdb.d/test_data.csv
+  elixirdb-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: elixirdb-sqlserver
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: StrongPassword!123
+      MSSQL_DB: elixirdb2
+      MSSQL_USER: test_user2
+      MSSQL_PASSWORD: StrongPassword!123
+    ports:
+      - 1433:1433
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S elixirdb-sqlserver -U sa -P 'StrongPassword!123' -Q 'SELECT 1' -C -l 30 -t 10 -d master -C || exit 1"]
+      interval: 10s
+      retries: 10
+      start_period: 15s
+      timeout: 3s
+    volumes:
+      - ./docker/test_data.csv:/docker-entrypoint-initdb.d/test_data.csv
+      - ./docker/mssql.fmt:/docker-entrypoint-initdb.d/mssql.fmt
+  elixirdb-sqlserver.configure:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+      - ./docker/mssql.sql:/docker-entrypoint-initdb.d/init.sql
+    depends_on:
+      elixirdb-sqlserver:
+        condition: service_healthy
+    command: >
+      bash -c '
+      /opt/mssql-tools18/bin/sqlcmd -S elixirdb-sqlserver -U sa -P 'StrongPassword!123' -d master -C -i docker-entrypoint-initdb.d/init.sql;
+      '
+  elixirdb-oracle:
+    image: gvenzl/oracle-free
+    container_name: elixirdb-oracle
+    environment:
+      ORACLE_PASSWORD: oracle
+      APP_USER: test_user
+      APP_USER_PASSWORD: StrongPassword!123
+      PDB_NAME: FREEPDB1
+    ports:
+      - "1521:1521"
+    volumes:
+      - ./docker/oracle.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/test_data.csv:/opt/oracle/scripts/test_data.csv
+      - ./docker/oracle_load.ctl:/opt/oracle/scripts/load.ctl
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'exit' | sqlplus -L sys/oracle@//localhost:1521/FREEPDB1 as sysdba > /dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+    command: >
+      bash -c '
+      sqlldr userid=test_user/StrongPassword!123@//localhost:1521/FREEPDB1 control=/opt/oracle/scripts/load.ctl
+      '
+    networks:
+      - ez_net
+  elixirdb-oracle.configure:
+    image: docker:latest
+    container_name: elixirdb-oracle.configure
+    depends_on:
+      elixirdb-oracle:
+        condition: service_healthy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+      sh -c '
+      docker exec elixirdb-oracle sqlldr test_user/StrongPassword!123@//localhost:1521/FREEPDB1 control=/opt/oracle/scripts/load.ctl;
+      '
+    networks:
+      - ez_net
+volumes:
+  development:
+  mysql_data:
+  #mariadb_data:
+  postgres_data:
+  mssql_data:
+  oracle_data:
+
+networks:
+  ez_net:
+    name: ez_net

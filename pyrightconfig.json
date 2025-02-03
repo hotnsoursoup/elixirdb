@@ -1,0 +1,11 @@
+{
+    "exclude": [
+        "**/__init__.py",
+        "elixirdb/config/types.py",
+        "**/dev/**",
+        "**dev/**",
+        "**appdata/**",
+        "**.pyi**"
+    ],
+
+}

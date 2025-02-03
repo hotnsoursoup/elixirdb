@@ -1,0 +1,15 @@
+# Dockerfile.mysql
+FROM mysql:8.0
+
+USER root
+
+# If you want to use netcat for anything. Just an example of how to install packages.
+RUN microdnf install -y nc && \
+    microdnf clean all && \
+    mkdir -p /docker-entrypoint-initdb.d && \
+    chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+
+COPY ./sql_scripts/mysql/ /docker-entrypoint-initdb.d/
+
+RUN chmod +x /docker-entrypoint-initdb.d/init.sql
+

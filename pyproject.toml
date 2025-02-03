@@ -1,0 +1,257 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["elixirdb*"]
+
+[tool.coverage.paths]
+elixirdb = ["src/elixirdb", "*/elixirdb/src/elixirdb"]
+tests = ["tests", "*/elixirdb/tests"]
+exclude = ["src/elixirdb/__about__.py"]
+
+[tool.setuptools.package-data]
+elixirdb = ["py.typed"]
+
+[project]
+name = "elixirdb"
+version = "0.1.1"
+authors = [{ name = "Victor Nguyen", email = "victor.win86@gmail.com" }]
+description = "A python library for a streamlined database experience from a config file."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+keywords = ["database", "SQL", "config", "ORM", "streamlined"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Cython",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Database"
+]
+dependencies = [
+    "pydantic>=2.9.1,<3.0.0",
+    "SQLAlchemy>=2.0.34",
+    "sqlparse>=0.5.1",
+    "sqlglot>=25.29.0",
+    "python-dateutil>=2.8.2",
+    "pyrootutils>=1.0.4",
+    "sqlalchemy-mixins>=2.0.5",
+    "pyaml>=25.1.0",
+]
+
+[project.optional-dependencies]
+mysql = ["pymysql>=1.1.1"]
+mariadb = ["mariadb"]
+postgresql = ["psycopg2>=2.9.6"]
+mssql = ["pymssql>=2.2.0"]
+oracle = ["oracledb>=2.3.0"]
+all_dbs = ["psycopg2>=2.9.6", "pymssql>=2.2.2", "oracledb>=2.3.0", "mariadb"]
+all = [
+    "pymysql>=1.1.1",
+    "psycopg2>=2.9.6",
+    "pymssql>=2.2.2",
+    "oracledb>=2.3.0",
+    "mariadb",
+    "ruff",
+    "bandit",
+    "bump-my-version>=0.31.0",
+    "black",
+    "isort",
+    "pyaml-env>=1.2.1",
+    "pytest>=8.3.3",
+    "pytest-html>=4.1.1",
+    "pytest-order>=1.3.0",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.7.10",
+    "black>=24.10.0",
+    "bump-my-version>=0.31.0",
+    "isort>=5.13.2",
+    "mypy>=1.14.0",
+    "no-implicit-optional>=1.4",
+    "ruff>=0.7.3",
+]
+test = [
+    "pytest-cov>=6.0.0",
+    "pyaml-env>=1.2.1",
+    "pytest-timeout>=2.3.1",
+    "pytest>=8.3.3",
+    "pytest-html>=4.1.1",
+    "pytest-order>=1.3.0",
+]
+
+[project.urls]
+homepage = "https://github.com/hotnsoursoup/elixir-db"
+documentation = "https://github.com/hotnsoursoup/elixir-db/tree/master/docs"
+testing = "https://github.com/hotnsoursoup/elixir-db/blob/master/docs/tests.md"
+
+[tool.coverage.report]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
+omit = ["src/elixirdb/__about__.py"]
+
+[tool.mypy]
+files = ["src", "tests"]
+show_error_codes = true
+incremental = true
+
+[tool.black]
+line-length = 84
+skip-magic-trailing-comma = true
+
+[tool.ruff]
+src = ["src", "tests"]
+fix = true
+preview = true
+line-length = 84
+exclude = [
+    "build",
+    "dist",
+    "dev",
+    "__pycache__",
+    "settings.py",
+    "env",
+    ".env",
+    "venv",
+    ".venv",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["PLR6301"]
+"src/elixirdb/schema/types.py" = ["E501"]
+"src/elixirdb/schema/config.pyy" = ["TCH001"]
+"src/elixirdb/schema/db_model.py" = ["TCH001"]
+
+[tool.ruff.lint]
+select = [
+    "D213", # Multi-line docstring summary should start at the second line
+    "F", # Pyflakes for undefined variables, unused imports, etc.
+    "E",
+    "W", # Pycodestyle rules for stylistic issues
+    "E302", # Expected 2 blank lines, found 1
+    "B", # flake8-bugbear for likely bugs and design issues
+    "Q", # flake8-quotes for consistent quote usage
+    "PL", # Pylint for general linting
+    "PT", # flake8-pytest-style for pytest consistency
+    "TID", # Tidy imports
+    "ISC", # Implicit string concatenation
+    "TCH", # Type-checking imports
+    "C4", # Comprehension optimizations
+    "PGH", # Pygrep hooks for regex rules
+    "RUF", # Ruff-specific rules
+    "PERF", # Performance-based lints
+    "FLY", # String formatting improvements
+    "FA", # Future annotations
+    "RSE", # Proper raise exceptions
+
+]
+ignore = [
+    "I001", # Ignore import errors
+    "ISC001", # Ignore implicit string concatenation
+    "F541", # Ignore f-string issues
+    "PERF401", # Ignore comprehension performance lint
+    "FBT001",
+    "FBT002",
+    "FBT003", # Ignore boolean traps in function args
+    "PLR0913", # Ignore "too many arguments" warnings
+    "W293",
+    "W291", # Ignore whitespace warnings
+    "PLR6201", # literal membership
+    "PLR0912", # Ignore "too many branches" warnings
+    "PLR0904",
+    "PLR6301", #
+    "PLW2901"
+]
+fixable = ["ALL"]
+
+[tool.flake8]
+max-line-length = 84
+
+[tool.bandit]
+exclude_dirs = [
+    "venv",
+    "build",
+    "dist",
+    "docs",
+    "env",
+    ".env",
+    ".venv",
+    "tests",
+    "tests/*",
+    "tests/**"
+]
+
+[tool.isort]
+profile = "black"
+line_length = 84
+lines_after_imports = 2
+combine_as_imports = true
+force_grid_wrap = 3
+known_first_party = ["elixirdb"]
+known_third_party = [
+    "pydantic",
+    "sql*",
+    "glom",
+    "ruff",
+    "bandit",
+    "black",
+    "isort",
+    "pre-commit",
+    "pytest*",
+    "pyaml-env",
+    "pyrootutils",
+    "python-dateutil",
+    "pymysql",
+    "psycopg2",
+    "pymssql",
+    "oracledb",
+    "mariadb",
+]
+known_local_folder = ["src", "tests", "dev"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+no_lines_before = ["THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+force_single_line = true
+use_parentheses = true
+
+[tool.pylint]
+disable = [
+    "E1101", # Accessing non-existent members
+    "R0913", # Too many arguments
+    "R0902", # Too many instance attributes
+    "R0903", # Too few public methods
+    "R0914", # Too many local variables
+    "E0237", # Assigning non-slot attributes
+    "E0401", # Import-error
+    "E0611", # No name in module
+
+]
+ignored-modules = ["/dev", "__init__", "src/elixirdb/config/types.py"]
+
+[tool.pylint.MASTER]
+ignore-patterns = "__init__.py"
+
+[tool.pytest.ini_options]
+markers = [
+    "connection: mark tests that require a database connection",
+    "model: test to validate configs with models",
+    "success: test to validate successful operations",
+    "exception: test that will raise exceptions",
+    "function: test for specific methods or functions",
+    "base: a test function for any base connectivity or setup",
+]
+filterwarnings = ["error", "ignore::DeprecationWarning", "ignore::UserWarning"]
+faulthandler_timeout = 5
+required_plugins = ["pytest-html", "pytest-cov"]
+console_output_style = "classic"
+addopts = "--maxfail=10 -rf --html=./tests/reports/report.html -vv --cov=elixirdb"

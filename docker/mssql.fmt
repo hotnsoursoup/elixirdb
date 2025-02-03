@@ -1,0 +1,6 @@
+9.0
+4
+1       SQLCHAR     0       3       ","    1      id       ""
+2       SQLCHAR     0       255     ","    2       name      SQL_Latin1_General_CP1_CI_AS
+3       SQLCHAR     0       10      ","    3       dob          ""
+4       SQLCHAR     0       36      "\r\n" 4       uuid         ""
