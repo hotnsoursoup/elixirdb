@@ -263,7 +263,9 @@ connection.set_engine("customerdb")
 
 The models provide a structured way to define and manage database configurations. The recommended approach is to view the model class, but if you want to dump it to a json file, you always have that option as well using `.model_json_schema()` on the class, but is much easier to read the pydantic model definition.
 
-In this example, we load each model separately and reconstruct it to the EngineModel. Note, there are
+In this example, we load each model separately and reconstruct it to the EngineModel.
+
+**Note** - Not all models are shown.
 
 ```python
 from elixirdb import ElixirDB, EngineModel, EngineOptions, ExecutionOptions
