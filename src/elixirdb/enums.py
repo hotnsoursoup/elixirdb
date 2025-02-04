@@ -38,7 +38,7 @@ class Handlers(str, Enum):
 
     ERROR_HANDLER = "error_handler"
     EXECUTION_HANDLER = "execution_handler"
-    parameter_handlers = "parameter_handlers"
+    PARAMETER_HANDLERS = "parameter_handlers"
     STATEMENT_HANDLERS = "statement_handlers"
     RESULT_HANDLERS = "result_handlers"
 
