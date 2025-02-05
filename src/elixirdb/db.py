@@ -419,7 +419,7 @@ class ElixirDB(ConnectionBase):
         if engine_key not in list(self.config.engines.keys()):
             raise EngineKeyNotFoundError(engine_key=engine_key)
 
-        if self.connection is not None:
+        if self.has_connection():
             self.close()
 
         self.engine_key = engine_key
