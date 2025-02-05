@@ -268,14 +268,32 @@ In this example, we load each model separately and reconstruct it to the EngineM
 **Note** - Not all models are shown.
 
 ```python
-from elixirdb import ElixirDB, EngineModel, EngineOptions, ExecutionOptions
+from elixirdb import ElixirDB
+from elixirdb import EngineModel
+from elixirdb import EngineOptions
+from elixirdb import ExecutionOptions
 
-execution_options = ExecutionOptions(preserve_rowcount=True, isolation_level="READ_COMMITTED")
+
+execution_options = ExecutionOptions(
+    preserve_rowcount=True,
+    isolation_level="READ_COMMITTED",
+    insertmanyvalues_page_size=1000,
+    no_parameters=True,
+)
 
 # Execution options are assigned to engine options
-engine_options = EngineOptions(echo=True, pool_size=20, nax_overflow=10, execution_options=execution_options)
+engine_options = EngineOptions(
+    echo=True,
+    pool_size=20,
+    nax_overflow=10,
+    execution_options=execution_options,
+)
 
-config = EngineModel(dialect="mysql", url="mysql+pymysql://user:password@localhost:3306/db1", engine_options=engine_options)
+config = EngineModel(
+    dialect="mysql",
+    url="mysql+pymysql://user:password@localhost:3306/db1",
+    engine_options=engine_options,
+)
 
 connection = ElixirDB(config)
 
