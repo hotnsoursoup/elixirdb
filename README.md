@@ -31,6 +31,7 @@ ElixirDB simplifies interaction with SQLAlchemy, providing streamlined database 
   - [Pydantic Models for Configuration](#pydantic-models-for-configuration)
     - [Multi-Engine Configuration](#multi-engine-configuration)
     - [Loading with Models](#loading-with-models)
+    - [Loading an Invalid Configuration](#loading-an-invalid-configuration)
   - [Engine Types](#engine-types)
   - [Handler Framework](#handler-framework)
     - [Parameter Handlers](#parameter-handlers)
@@ -72,11 +73,10 @@ pip install uv
 Change your directory to the cloned repo (and create a virtual environment if you wish)
 
 ```bash
-# Run uv and create a virtual environment.
-
-# Pick your extras/groups
+# Run uv and create a virtual environment
 uv venv
 
+# Pick your extras/groups
 uv sync --group dev --group test --extra mysql
 
 # or
@@ -280,6 +280,8 @@ config = EngineModel(dialect="mysql", url="mysql+pymysql://user:password@localho
 connection = ElixirDB(config)
 
 ```
+
+### Loading an Invalid Configuration
 
 If your configuration is missing a required field or an invalid input is provided, you may see an error like this. In some cases, after resolving them, you may find more errors arise due to the way pydantic validates before and after validators.
 
