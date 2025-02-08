@@ -125,6 +125,7 @@ myconfig = {
         "port": 5432,
         "database": "mydatabase",
         "user": "user",
+    },
     "engine_options": {
         "pool_size": 10,
         "pool_recycle": 3600,
