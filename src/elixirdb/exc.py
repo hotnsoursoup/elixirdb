@@ -128,6 +128,10 @@ class EngineKeyNotFoundError(ElixirConfigError):
         super().__init__(message)
 
 
+class InsufficientEnginesError(ElixirConfigError):
+    """Exception raised when a specified configuration name is not found."""
+
+
 class EngineKeyNotDefinedError(ElixirConfigError):
     """
     Exception raised when a configuration could not be identified because
@@ -154,4 +158,10 @@ class CursorResultError(Exception):
 class NoSessionFactoryError(Exception):
     """
     Exception raised when attempting to access a session factory.
+    """
+
+
+class FlaskNotInstalledError(Exception):
+    """
+    Error raised when using flask related features without flask installed.
     """
