@@ -16,8 +16,8 @@ from pydantic import model_validator
 from elixirdb.models.engine import EngineModel
 from elixirdb.models.engine import driver_map
 from elixirdb.models.model import StrictModel
-from elixirdb.types import DatabaseKey
 from elixirdb.types import DriverMapping
+from elixirdb.types import EngineKey
 
 
 class EngineManager(StrictModel):
@@ -42,24 +42,27 @@ class EngineManager(StrictModel):
         "default": True
     }
 
-    }
     """
 
-    default_engine_key: ClassVar[DatabaseKey | None] = None
+    default_engine_key: ClassVar[EngineKey | None] = None
 
     defaults: Mapping[str, Any] | None = Field(
         None,
         description=(
-            "A mapping of EngineModel values. All fields become optional "
-            "and these values are inherited by all engines. Values within "
-            "each engine will take precedence over the defaults."
+            """
+            A mapping of EngineModel values. All fields become optional
+            and these values are inherited by all engines. Values within
+            each engine will take precedence over the defaults.
+            """
         ),
     )
 
-    engines: Mapping[DatabaseKey, EngineModel] = Field(
+    engines: Mapping[EngineKey, EngineModel] = Field(
         description=(
-            "A dictionary of engine configurations. The key is the "
-            "dialect and the value is an EngineModel."
+            """
+            A dictionary of engine configurations. The EngineKey is a str value
+            that is used to identify the engine.
+            """
         )
     )
 
@@ -73,9 +76,11 @@ class EngineManager(StrictModel):
     global_override: bool = Field(
         False,
         description=(
-            "Controls whether settings here override all other settings. "
-            "Default behavior is for settings in specific databases to override "
-            "the defaults set in defaults. "
+            """
+            Controls whether settings here override all other settings.
+            Default behavior is for settings in specific databases to override
+            the defaults set in defaults.
+            """
         ),
     )
 
@@ -139,7 +144,7 @@ class EngineManager(StrictModel):
         return self
 
     @classmethod
-    def set_default_engine_key(cls, engine_key: DatabaseKey) -> None:
+    def set_default_engine_key(cls, engine_key: EngineKey) -> None:
         """
         Set the default engine key for the class.
         """
