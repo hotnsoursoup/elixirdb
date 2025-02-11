@@ -40,7 +40,7 @@ from elixirdb.utils.db_utils import apply_schema_to_statement
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
     from sqlalchemy.engine.interfaces import _CoreAnyExecuteParams
-    from sqlalchemy.engine.result import RowMapping
+    from sqlalchemy.engine.row import RowMapping
     from sqlalchemy.orm.session import Session
     from elixirdb.types import DatabaseEngineConfig
     from elixirdb.types import EngineType
@@ -96,7 +96,8 @@ class ElixirDB(ConnectionBase):
         super().__init__(config=config, engine_key=engine_key, **kwargs)
 
         self.debug = self.db.debug
-        self.engine_type = engine_type or "session"
+
+        self.engine_type = engine_type
         self.session_factory = session_factory
 
         if engine_type != "direct":
@@ -366,7 +367,10 @@ class ElixirDB(ConnectionBase):
         """
         engine = engine or self.engine
         engine_type = engine_type or self.engine_type
-
+        if engine_type == "direct":
+            raise InvalidEngineTypeError(
+                "Cannot create a session factory for direct connection mode."
+            )
         # Extract and prepare session options
         options = (
             self.db.session_options.model_dump(
@@ -383,16 +387,8 @@ class ElixirDB(ConnectionBase):
         # can be assigned to the class as well. Used with scoped sessions.
         scopefunc = scopefunc or options.pop("scopefunc", None) or self.scopefunc
 
-        # Cache the scope function if not already set
-        self.scopefunc = scopefunc
-
-        if engine_type == "scoped":
-            return scoped_session(
-                sessionmaker(bind=engine, **options), scopefunc=scopefunc
-            )
-
-        raise InvalidEngineTypeError(
-            "Cannot create session factory when using direct connection mode."
+        return scoped_session(
+            sessionmaker(bind=engine, **options), scopefunc=scopefunc
         )
 
     def set_engine(self, engine_key: str) -> None:
