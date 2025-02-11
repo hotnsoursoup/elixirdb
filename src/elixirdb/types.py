@@ -18,11 +18,12 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy import RowMapping, Row
 
-from elixirdb.models.engine import EngineModel
+
 from elixirdb.enums import Dialect
 
 if TYPE_CHECKING:
     from elixirdb.models.manager import EngineManager
+    from elixirdb.models.engine import EngineModel
     from sqlalchemy.sql.base import Executable
     from sqlalchemy.engine import Engine
     from sqlalchemy.engine.interfaces import _CoreAnyExecuteParams
@@ -56,10 +57,9 @@ SQLStatement: TypeAlias = str
 TableName: TypeAlias = str
 SchemaName: TypeAlias = str
 DialectName: TypeAlias = str
-DatabaseKey: TypeAlias = str
 DriverName: TypeAlias = str  # e.g. "postgresql+psycopg2"
 DriverMapping: TypeAlias = Mapping[Dialect, DriverName]
-
+EngineKey: TypeAlias = str
 
 EngineType: TypeAlias = Literal["direct", "session", "scoped"]
 SessionType: TypeAlias = Session | Callable[[], Session]
@@ -224,7 +224,7 @@ class OptParam(EngineParams, BaseEngineDict, total=False):
 DefaultEngineConfig: TypeAlias = OptUrl | OptParam
 # Engine Configurations
 EngineConfig: TypeAlias = EngineUrl | EngineParams
-EngineConfigDict: TypeAlias = Mapping[str, EngineConfig | Mapping[str, Any]]
+EngineConfigDict: TypeAlias = Mapping[EngineKey, EngineConfig | Mapping[str, Any]]
 
 
 class ConfigDict(TypedDict, total=False):
@@ -254,10 +254,10 @@ class AppConfigDict(TypedDict):
     app: NotRequired[ConfigDict]
     # A dictionary of database configurations, with keys as database names
     # Added dict[str, Any] to allow for more lax type checking
-    engines: EngineConfigDict | dict[str, Any]
+    engines: EngineConfigDict | dict[EngineKey, Any]
 
 
-ConfigModel: TypeAlias = Union["EngineManager", EngineModel]
+ConfigModel: TypeAlias = Union["EngineManager", "EngineModel"]
 
 # The configuration passed into the connection classes
 DatabaseEngineConfig: TypeAlias = (
