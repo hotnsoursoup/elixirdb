@@ -62,15 +62,11 @@ all = [
     "pymssql>=2.2.2",
     "oracledb>=2.3.0",
     "mariadb",
-    "ruff",
-    "bandit",
-    "bump-my-version>=0.31.0",
-    "black",
-    "isort",
     "pyaml-env>=1.2.1",
-    "pytest>=8.3.3",
-    "pytest-html>=4.1.1",
-    "pytest-order>=1.3.0",
+]
+
+flask = [
+    "flask",
 ]
 
 [dependency-groups]
