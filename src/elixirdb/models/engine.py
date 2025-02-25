@@ -1,5 +1,6 @@
 """
-Database Validation Models used for validating configurations
+EngineModel provides pydantic validation for SQLAlchemy Engine
+configurations.
 """
 
 # pyright: reportArgumentType=false
@@ -9,7 +10,6 @@ from __future__ import annotations
 
 from typing import Any
 from typing import Literal
-from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 from pydantic import field_validator
@@ -137,7 +137,7 @@ class Statements(StrictModel):
         return values
 
 
-class EngineModel(BaseModel):
+class EngineModel(StrictModel):
     """
     Single sqlalchemy database engine configuration model.
 
@@ -162,7 +162,7 @@ class EngineModel(BaseModel):
     apply_textclause: bool = Field(
         True,
         description=(
-            "Apply textclause to any query sent to execute as a raq string."
+            "Apply textclause to any query sent to execute as a raw string."
         ),
         examples=["'SELECT 1' -> textclause('SELECT 1')"],
     )
