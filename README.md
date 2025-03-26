@@ -119,12 +119,11 @@ Though the library does support automatic loading, you have the option to do it 
 ```python
 myconfig = {
     "dialect": "postgres",
-    "url": "postgresql//user:password@localhost:5432/mydatabase",
     "url_params": {
         "host": "localhost",
         "port": 5432,
         "database": "mydatabase",
-        "user": "user",
+        "username": "user",
     },
     "engine_options": {
         "pool_size": 10,
@@ -132,7 +131,6 @@ myconfig = {
         "pool_pre_ping": True,
         }
     }
-}
 
 connection = ElixirDB(myconfig)
 ```
@@ -214,7 +212,7 @@ app:
 engines:
     dbkey1:
         dialect: mysql
-        url: mysql+pymysql://user:password@localhost:3306/db1
+        url: mysql+pymysql://myuser:password@localhost:3306/db1
         default: true # This engine will be used by default if an engine_key is not provided.
         execution_options:
             autocommit: True
@@ -226,7 +224,7 @@ engines:
             drivername: psycopg2
             host: localhost
             port: 5432
-            user: postgres
+            username: postgres
             password: password
             query:
                 schema: public
